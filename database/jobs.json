@@ -1,19 +1,4 @@
 {
     "sensor_jobs": [
-        {
-            "mac": "98:e7:43:6c:32:ef",
-            "jobs": []
-        },
-        {
-            "mac": "00:x7:z0:0c:32:zz",
-            "jobs": [
-                "sdr for space",
-                "sdr for space"
-            ]
-        },
-        {
-            "mac": "00:x7:z0:0c:32:zz",
-            "jobs": []
-        }
     ]
 }
