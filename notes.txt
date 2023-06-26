@@ -1,0 +1,35 @@
+create a simlink in the folder to the cesium folder
+
+ln -s /home/static/Desktop/rf_project/cesium/ /home/static/Desktop/rf_project/photonmap/html/cesium
+
+
+TODO:
+change make file to cmake
+implement getopt in client 
+
+
+SDR for space variables:
+
+
+gpsd notes
+for include gps.h
+
+    $ sudo apt install gpsd
+    $ sudo apt-get install libgps-dev 
+
+
+new sensor format
+
+{
+            "mac": "10:n7:93:54:45:gf",
+            "ip": "127.0.0.1",
+            "port": 57670,
+            "latitude": 12.345678,
+            "longitude": 98.765432,
+            "hackrf": 1,
+            "rtlsdr": 0
+        },
+
+
+TODO: change the design to write new mac to jobs file immediately upon a new connection connection
+Right now, the new node is added after the node is selected in the dashboard 
