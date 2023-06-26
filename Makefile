@@ -13,7 +13,7 @@ TST_DIR := test/src/c_test
 SRCS := $(wildcard $(SRC_DIR)/*.c) 
 OBJS := $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRCS))
 
-BIN := tutelary
+BIN := aegis
 CHECK := $(BIN)_check
 
 TSTS := $(wildcard $(TST_DIR)/*.c)
