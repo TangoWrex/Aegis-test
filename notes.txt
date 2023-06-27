@@ -32,7 +32,7 @@ new sensor format
 
 {
             "sensor_name":""
-            "sensor_password":""
+            "sensor_password"
             "ip": "127.0.0.1",
             "port": 57670,
             "latitude": 12.345678,
