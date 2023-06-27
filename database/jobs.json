@@ -5,7 +5,7 @@
             "jobs": []
         },
         {
-            "mac": "00:x7:z0:0c:32:zz",
+            "mac": "",
             "jobs": [
                 "sdr for space",
                 "sdr for space"

@@ -31,7 +31,8 @@ for include gps.h
 new sensor format
 
 {
-            "mac": "10:n7:93:54:45:gf",
+            "sensor_name":""
+            "sensor_password":""
             "ip": "127.0.0.1",
             "port": 57670,
             "latitude": 12.345678,
