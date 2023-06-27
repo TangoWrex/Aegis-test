@@ -35,10 +35,12 @@ new sensor format
             "sensor_password"
             "ip": "127.0.0.1",
             "port": 57670,
-            "latitude": 12.345678,
-            "longitude": 98.765432,
+            "gps_status" : 0,
+            "latitude": <lat>,
+            "longitude": <long>,
             "hackrf": 1,
-            "rtlsdr": 0
+            "rtlsdr": 0,
+            "bluetooth": <boolean if bluetooth capable> (1 or 0)
         },
 
 
