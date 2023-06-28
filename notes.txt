@@ -46,3 +46,13 @@ new sensor format
 
 TODO: change the design to write new mac to jobs file immediately upon a new connection connection
 Right now, the new node is added after the node is selected in the dashboard 
+
+
+
+
+Cesium Notes:
+
+https://resium.reearth.io/installation
+
+
+https://github.com/reearth/craco-cesium
