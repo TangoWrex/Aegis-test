@@ -11,22 +11,60 @@ extern volatile sig_atomic_t shutdown_flag;
 int run_aegis_client(int argc, char * argv[])
 {
 
-    link_signal(SIGINT, sigint_handler, true);
-    char *       ip   = "127.0.0.1";
-    const char * port = "5003";
-    char *       mac  = "00:x7:z0:0c:32:zz";
+    int    ret_code = FAIL_CODE;
+    char * p_port   = NULL;
+    int    opt      = 0;
 
-    int sock = tcp_socket_setup(port, ip);
-    if (sock < 0)
+    // ensure the argument count is correct
+    int arg_count = check_args(argc);
+    if (FAIL_CODE == arg_count)
     {
-        perror("socket setup failed");
-        return 0;
+        fprintf(stderr, "Invalid argument count\n");
+        goto EXIT;
     }
+
+    // set up signal handling to catch SIGINT
+    int signal_success = link_signal(SIGINT, sigint_handler);
+    if (FAIL_CODE == signal_success)
+    {
+        fprintf(stderr, "Could not link signal handler\n");
+        goto EXIT;
+    }
+
+    // getopt
+    while ((opt = getopt(argc, argv, "p:d:t:")) != -1)
+    {
+        switch (opt)
+        {
+            case 'p': // port
+                p_port = optarg;
+                break;
+            case ':':
+                fprintf(stderr, "Usage: ./server -p port -d <directory> -t <timeout>\n");
+                goto EXIT;
+            default:
+                fprintf(stderr, "Usage: ./server -p port -d <directory> -t <timeout>\n");
+                goto EXIT;
+        }
+    }
+
+    // Check for a valid port range
+    int valid_port = check_port(p_port);
+    if (FAIL_CODE == valid_port)
+    {
+        fprintf(stderr, "Invalid port\n");
+        goto EXIT;
+    }
+
+    // allow our socket to use any ip address
+    char ip_array[INET6_ADDRSTRLEN];
+    snprintf(ip_array, INET6_ADDRSTRLEN, "%s", "0.0.0.0");
+    char * ip_addr = ip_array;
 
     // get the mac
 
     // send the mac address
-    send_mac(sock, mac);
+    // send_mac(sock, mac);
 
     // 4. wait for the server to send an authentication response
     // for the the server to inform us we are registered and wait for a job from the
@@ -96,55 +134,6 @@ int run_aegis_client(int argc, char * argv[])
     printf("job: %s", job);
 
     close_socket(sock);
-}
-
-int tcp_socket_setup(const char * port, char * ip)
-{
-    if (NULL == port)
-    {
-        fprintf(stderr, "Invalid Port\n");
-        return 0;
-    }
-    if (NULL == ip)
-    {
-        fprintf(stderr, "invalid IP\n");
-    }
-    struct addrinfo * results;
-    int               err = getaddrinfo(ip, port, NULL, &results);
-    if (0 != err)
-    {
-        fprintf(stderr, "Cannot get address: %s\n", gai_strerror(err));
-        return EX_NOHOST;
-    }
-
-    int sd = socket(results->ai_family, SOCK_STREAM, 0);
-    if (sd < 0)
-    {
-        fprintf(stderr, "Could not create socket");
-        freeaddrinfo(results);
-        return EX_OSERR;
-    }
-
-    err = connect(sd, results->ai_addr, results->ai_addrlen);
-    if (err < 0)
-    {
-        perror("Could not connect to remote");
-        close(sd);
-        freeaddrinfo(results);
-        return EX_UNAVAILABLE;
-    }
-
-    return sd;
-}
-
-void close_socket(int sock)
-{
-    if (0 == sock)
-    {
-        fprintf(stderr, "Socket not specified");
-        return;
-    }
-    close(sock);
 }
 
 static void send_msg(int sock, void * msg, FILE * fp, int read_size)
@@ -297,49 +286,114 @@ bool send_file(int sock, FILE * fp)
     return true;
 }
 
-bool process_job(char * job, int socket)
+int execute_job(job_t * p_job, threadpool_t * p_pool)
 {
-    if (NULL == job)
+
+    if (NULL == p_job)
     {
-        perror("job not received");
-        return false;
+        fprintf(stderr, "job is NULL");
+        goto EXIT;
     }
-    char change_dir[5];
-    sprintf(change_dir, "%s", "cd /");
+    if (NULL == p_pool)
+    {
+        fprintf(stderr, "pool is NULL");
+        goto EXIT;
+    }
 
-    printf("executing task: %s\n", job);
-    return true;
+    // get the socket from the job and free the job
+    // int socket = p_job->socket;
 
-    // char send_file_test[9];
-    // sprintf(send_file_test, "%s", "sendfile");
+    while (!shutdown_flag)
+    {
+        if (true == shutdown_flag)
+        {
+            goto EXIT;
+        }
 
-    // if (strncmp(job, "sdrforspace", 11) == 0){
-    //     // program should be ran from root, but if not we'll go to the dir anyway
-    //     // TODO: pull in the bash script off the pi that we built
-    //     char sdrforspace_test[87] = "sudo ./usr/src/SDR4space/sdrvm -d
-    //     DragonOS/RX/spectrum/1_wide_spectrum/ -f spectrum.js"; printf("executing task:
-    //     sdrforspace\n");
+        char client_message[MAX_PACKET_LEN] = { 0 };
+        read_size = recv(socket, client_message, MAX_PACKET_LEN, 0);
 
-    //     FILE *fp;
-    //     fp = popen(change_dir, "r");
-    //     pclose(fp);
+        if (0 == read_size)
+        {
+            goto CLIENT_DISCONNECTED;
+        }
 
-    //     // fp = popen(sdrforspace_test, "r");
-    //     // pclose(fp);
-    //     return true;
-    // }
+        // check if the read size is atleast one byte larger than the max packet
+        if (MAX_PACKET_LEN < read_size)
+        {
+            fprintf(stderr, "packet too large");
+            client_message[0] = 0;
+            goto EXIT;
+        }
+        // the opcode should always be the first byte of the packet
+        // if not then the packet the client is sending is invalid
+        int opcode = client_message[0];
+        switch (opcode)
+        {
+            case SDR_SPACE: // 0x01
+                ret_code = authentication(client_message, p_pool->client_llist, socket);
+                job_return_check(authentication_p, ret_code);
+                break;
+            default:
+                fprintf(stderr, "Invalid opcode: %d\n", opcode);
+                // I've decided to disconnect the client. If we're getting invalid opcodes
+                // the client is not being used as intended
+                goto DISCONNECTED;
+        }
+        client_message[0] = 0;
+    }
 
-    // if (strncmp(job, send_file_test, 8) == 0){
-    //     // program should be ran from root, but if not we'll go to the dir anyway
-    //     printf("execute send job command\n");
+DISCONNECTED:
+    // Build logic for server disconnection
 
-    //     int read_size = 1024;
-    //     FILE *fp;
-    //     fp = fopen("wrx.jpg", "r");
-    //     bool return_from_send = send_file(socket, fp);
-    //     pclose(fp);
-    //     return true;
-    //     }
+EXIT:
+    return ret_code;
+} /* execute_job() */
 
-    return false;
-}
+// bool process_job(char * job, int socket)
+// {
+//     if (NULL == job)
+//     {
+//         perror("job not received");
+//         return false;
+//     }
+//     char change_dir[5];
+//     sprintf(change_dir, "%s", "cd /");
+
+//     printf("executing task: %s\n", job);
+//     return true;
+
+//     // char send_file_test[9];
+//     // sprintf(send_file_test, "%s", "sendfile");
+
+//     // if (strncmp(job, "sdrforspace", 11) == 0){
+//     //     // program should be ran from root, but if not we'll go to the dir anyway
+//     //     // TODO: pull in the bash script off the pi that we built
+//     //     char sdrforspace_test[87] = "sudo ./usr/src/SDR4space/sdrvm -d
+//     //     DragonOS/RX/spectrum/1_wide_spectrum/ -f spectrum.js"; printf("executing
+//     task:
+//     //     sdrforspace\n");
+
+//     //     FILE *fp;
+//     //     fp = popen(change_dir, "r");
+//     //     pclose(fp);
+
+//     //     // fp = popen(sdrforspace_test, "r");
+//     //     // pclose(fp);
+//     //     return true;
+//     // }
+
+//     // if (strncmp(job, send_file_test, 8) == 0){
+//     //     // program should be ran from root, but if not we'll go to the dir anyway
+//     //     printf("execute send job command\n");
+
+//     //     int read_size = 1024;
+//     //     FILE *fp;
+//     //     fp = fopen("wrx.jpg", "r");
+//     //     bool return_from_send = send_file(socket, fp);
+//     //     pclose(fp);
+//     //     return true;
+//     //     }
+
+//     return false;
+// }
