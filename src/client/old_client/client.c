@@ -19,6 +19,10 @@
 #include <signal.h>  // signal
 #include <arpa/inet.h>
 
+#define MAX_LIMIT 40
+#define PCKT_LEN  1024
+#define FILE_SIZE 2048
+
 extern volatile sig_atomic_t shutdown_flag;
 
 int tcp_socket_setup(const char * port, char * ip)

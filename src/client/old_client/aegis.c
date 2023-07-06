@@ -1,10 +1,20 @@
-#include "aegis.h"
+#include "client.h"
+#include "signal_handle.h"
+#include <stdlib.h> // calloc
+#include <stdio.h>
+#include <string.h>
+
+#include <netdb.h>
+#include <unistd.h>
+
+#include <ifaddrs.h>
+#include <netpacket/packet.h>
 
 #define PCKT_LEN 2048
 
 volatile sig_atomic_t shutdown_flag = false;
 
-int run_aegis_client(int argc, char * argv[])
+int main(int argc, char * argv[])
 {
 
     link_signal(SIGINT, sigint_handler, true);
