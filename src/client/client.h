@@ -1,6 +1,14 @@
-#include<stdio.h> // FILE
-#include<stdbool.h> // bool
-#include<gps.h> // gps
+/** @file client.h
+ *
+ * @brief
+ *
+ */
+
+
+#ifndef CLIENT_H
+#define CLIENT_H
+
+#include "main_client.h"
 
 /** 
  * @brief create tcp socket as our admin channel
@@ -74,3 +82,6 @@ void get_gps();
 // https://stackoverflow.com/questions/32000328/how-can-i-implement-a-gpsd-client-in-c-to-get-latitude-longitude-and-altitude
 
 //
+
+
+#endif
