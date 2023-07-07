@@ -3,19 +3,8 @@ create a simlink in the folder to the cesium folder
 ln -s /home/static/Desktop/rf_project/cesium/ /home/static/Desktop/rf_project/photonmap/html/cesium
 
 
-TODO:
-change make file to cmake
-implement getopt in client 
 
 
-
-TODO: change the design to write new mac to jobs file immediately upon a new connection connection
-Right now, the new node is added after the node is selected in the dashboard 
-
-TODO: 
-Implement struct packed
-create protocol for different messages and task 
-NOTE: Draw.io
 
 
 SDR for space variables:
@@ -39,13 +28,11 @@ new sensor format
             "latitude": <lat>,
             "longitude": <long>,
             "hackrf": 1,
-            "rtlsdr": 0,
-            "bluetooth": <boolean if bluetooth capable> (1 or 0)
+            "rtlsdr": 0 or 1,
+            "bluetooth": <boolean if bluetooth capable> (1 or 0),
+            "krakensdr" : 1 or 0;
         },
 
-
-TODO: change the design to write new mac to jobs file immediately upon a new connection connection
-Right now, the new node is added after the node is selected in the dashboard 
 
 
 
