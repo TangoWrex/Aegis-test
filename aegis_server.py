@@ -11,10 +11,6 @@ json_lock = threading.Lock()
 
 nodes = {}
 
-# thread function
-
-#  https://www.geeksforgeeks.org/socket-programming-multi-threading-python/
-
 
 def threaded(c: socket.socket, ip: str, port: str):
     while True:
