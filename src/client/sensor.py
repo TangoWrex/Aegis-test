@@ -21,7 +21,7 @@
         }
 
 """
-
+import subprocess
 from connection import Connection
 
 
@@ -91,6 +91,15 @@ class ClientSensor(Connection):
         # Implement the send GPS logic here
         pass
 
+    def run_kismet(self, output_directory):
+        """run_kismet
+        """
+        # Set the output file path
+        output_file = f"{output_directory}/kismet_capture.pcap"
+
+        # Run Kismet with the desired output file path
+        subprocess.run(['kismet', '-c', output_file], check=True)
+
     def scan_wifi(self):
         """Get the Wi-Fi data.
 
@@ -100,7 +109,11 @@ class ClientSensor(Connection):
         :rtype: str
         """
         # Implement the Wi-Fi logic here
-        pass
+
+        # Example usage:
+        # TODO: Validate this file path exists and is valid
+        output_directory = "/path/to/project/directory"
+        self.run_kismet(output_directory)
 
     def send_wifi_data(self):
         """Send the Wi-Fi data.
@@ -151,4 +164,15 @@ class ClientSensor(Connection):
         :return: None
         """
         # Implement the send SDR for space logic here
+        pass
+
+    def passive_scan_and_alert(self):
+        """Passively scan and alert.
+
+        This method passively scans for devices and alerts the server if a
+        device is found.
+
+        :return: None
+        """
+        # Implement the passive scan and alert logic here
         pass

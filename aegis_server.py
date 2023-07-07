@@ -14,22 +14,25 @@ json_lock = threading.Lock()
 nodes = {}
 
 
-def threaded(c: socket.socket, ip: str, port: str):
+def threaded(connection: socket.socket, ipaddr: str, port: str):
+    """threaded 
+
+    Thread to hand the client
+    """
     while True:
 
         # data received from client
-        mac = c.recv(2048)
+        mac = connection.recv(2048)
         mac = mac.decode("utf-8")
 
         if not mac:
-            print('Bye')
             # lock released on exit
             break
 
         print(f'mac: {mac}')
 
         # check if the node is in the macbase
-        node = client(mac, ip, port)
+        node = client(mac, ipaddr, port)
 
         # add sensor to the jobs list
         add_sensor(mac)
@@ -54,33 +57,33 @@ def threaded(c: socket.socket, ip: str, port: str):
                 json_lock.acquire()
                 new_node = {"mac": node.mac, "ip": node.ipaddr,
                             "port": node.port}
-                with open(f'./database/clients.json', 'r+') as f:
+                with open(f'./database/clients.json', 'r+') as file:
                     file_data = json.load(f)
 
                     file_data["sensor_information"].append(new_node)
-                    f.seek(0)
-                    json.dump(file_data, f, indent=4)
+                    file.seek(0)
+                    json.dump(file_data, file, indent=4)
                 json_lock.release()
 
-            c.send(b'ACK')
+            connection.send(b'ACK')
 
             # send a message saying true
-        except Exception as e:
-            print(e)
+        except ValueError as err:
+            print(err)
             print('Error in the database')
             # send a message saying false
-            c.send(b'False')
+            connection.send(b'False')
 
         # send the client a message information them they are registered
 
         while True:
             # mac_added_to_jobs = False
-            checkin = c.recv(2048)
+            checkin = connection.recv(2048)
             if checkin == b'checkin':
                 # check jobs.json for a job for this mac
                 # c.send(b'runsdr')
-                with open(f'./database/jobs.json', 'r') as f:
-                    jobs = json.load(f)
+                with open(f'./database/jobs.json', 'r') as file2:
+                    jobs = json.load(file2)
                     for key, value in jobs.items():
                         for node in value:
                             if node['mac'] == mac:
@@ -89,11 +92,12 @@ def threaded(c: socket.socket, ip: str, port: str):
                                 if len(node['jobs']) > 0:
                                     # craft message to send
                                     sensors_job = node['jobs'][0]
-                                    c.send(sensors_job.encode('utf-8'))
+                                    connection.send(
+                                        sensors_job.encode('utf-8'))
                                     # remove the job from the jobs.json file
                                     node['jobs'].pop(0)
-                                    with open(f'./database/jobs.json', 'w') as f:
-                                        json.dump(jobs, f, indent=4)
+                                    with open(f'./database/jobs.json', 'w') as file2:
+                                        json.dump(jobs, file2, indent=4)
 
                                     # os.system(
                                     #     f"ncat --ssl -w 3 -l -p 15051 > saved_files/{mac}wrx.jpg")
@@ -101,8 +105,8 @@ def threaded(c: socket.socket, ip: str, port: str):
                                     # os.system(f"ncat --ssl -w 3 -l -p 15051 > \{app.config['DOWNLOAD_FOLDER']}/{file}")
 
                                 else:
-                                    print(f'sending no jobs\n')
-                                    c.send(b'no job')
+                                    # print(f'sending no jobs\n')
+                                    connection.send(b'no job')
 
             if checkin == 'exit':
                 break
@@ -118,10 +122,10 @@ def threaded(c: socket.socket, ip: str, port: str):
 
         print("bottom of thread function\n")
 
-    c.close()
+    connection.close()
 
 
-def Main():
+def main():
     host = ""
 
     # reserve a port on your computer
@@ -142,14 +146,14 @@ def Main():
     while True:
         try:
             # establish connection with client
-            c, addr = s.accept()
+            connection, addr = s.accept()
 
             # Check data base for their mac address
 
             print('Connected to :', addr[0], ':', addr[1])
 
             # Start a new thread and return its identifier
-            start_new_thread(threaded, (c, addr[0], addr[1]))
+            start_new_thread(threaded, (connection, addr[0], addr[1]))
         except KeyboardInterrupt:
             print("Keyboard Interrupt")
             break
@@ -158,4 +162,4 @@ def Main():
 
 
 if __name__ == '__main__':
-    Main()
+    main()
