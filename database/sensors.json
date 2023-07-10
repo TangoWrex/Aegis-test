@@ -1,7 +1,7 @@
 {
-    "sensor_information": [
-        {
-            "sensor_name":"",
+    "sensor_information": 
+    {
+            "sensor_id":"",
             "sensor_password": "",
             "ip": "0",
             "port": 0,
@@ -11,6 +11,5 @@
             "sdr": "",
             "bluetooth": 0,
             "krakensdr": 0
-        }
-    ]
+    }   
 }

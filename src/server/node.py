@@ -3,17 +3,27 @@ import socket
 from time import sleep
 import json
 
+MAX_PACKET_LEN = 2048
 
-class client(object):
+
+class Client(object):
     """client object is created when a connection starts
 
     port 1 and port 2 are both send via the instructions port from the C server
     """
 
-    def __init__(self, macaddr, ipaddr, port):
+    def __init__(self, connection,  ipaddr, port):
+        self.connection = connection
         self.ipaddr = ipaddr
-        self.mac = macaddr
         self.port = port
+
+    def valid_user(self):
+        """valid_user 
+        """
+        json_data = self.connection.recv(MAX_PACKET_LEN).decode()
+        data = json.loads(json_data)
+
+        print(data)
 
     @classmethod
     def recv_timeout(self, the_socket, timeout=1):

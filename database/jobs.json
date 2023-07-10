@@ -1,7 +1,7 @@
 {
     "sensor_jobs": 
     { 
-        "sensor_name": "",
+        "sensor_id": "",
         "sensor_jobs" :[]
     }
 

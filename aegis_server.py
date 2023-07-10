@@ -22,17 +22,11 @@ def threaded(connection: socket.socket, ipaddr: str, port: str):
     while True:
 
         # data received from client
-        mac = connection.recv(2048)
-        mac = mac.decode("utf-8")
-
-        if not mac:
-            # lock released on exit
-            break
-
-        print(f'mac: {mac}')
 
         # check if the node is in the macbase
-        node = client(mac, ipaddr, port)
+        node = client(connection, ipaddr, port)
+
+        valid_user = node.valid_user()
 
         # add sensor to the jobs list
         add_sensor(mac)
@@ -133,20 +127,20 @@ def main():
     # can be anything
     port = 5003
     # TODO: change this to a setup_socket function
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    s.bind((host, port))
+    server_addr = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_addr.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    server_addr.bind((host, port))
     print("socket binded to port", port)
 
     # put the socket into listening mode
-    s.listen(5)
+    server_addr.listen(5)
     print("socket is listening")
 
     # a forever loop until client wants to exit
     while True:
         try:
             # establish connection with client
-            connection, addr = s.accept()
+            connection, addr = server_addr.accept()
 
             # Check data base for their mac address
 
@@ -158,7 +152,7 @@ def main():
             print("Keyboard Interrupt")
             break
 
-    s.close()
+    server_addr.close()
 
 
 if __name__ == '__main__':

@@ -55,6 +55,7 @@ class Connection:
             # address = (int(ipaddr), int(port))
             address = (self.ipaddr, self.port)
             self.sock.connect(address)
+
         except ConnectionError as connerr:
             print(f'connection setup failure: {connerr}')
             sys.exit()

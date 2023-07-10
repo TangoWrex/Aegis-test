@@ -1,0 +1,24 @@
+{
+    "login_response": 
+    {
+        "sensor_id":"",
+        "status":"" 
+    },
+    "send_gps":
+    {
+        "sensor_id":""
+    },
+    "reboot_device":
+    {
+        "sensor_id":""
+    },
+    "request_status":
+    {
+        "sensor_id":""
+    },
+    "execute_job":
+    {
+        "sensor_id":"",
+        "job_id":""
+    }
+}

@@ -1,0 +1,29 @@
+{
+    "login": 
+    {
+        "sensor_id":"",
+        "sensor_password": ""
+    },
+    "gps_update":
+    {
+        "sensor_id":"",
+        "latitude":"",
+        "longitude":""
+    },
+    "sensor_alert":
+    {
+        "sensor_id":"",
+        "alert_type":"",
+        "alert_message":""
+    },
+    "sensor_status":
+    {
+        "sensor_id":"",
+        "status":""
+    },
+    "setup_error":
+    {
+        "sensor_id":"",
+        "error_code":""
+    }
+}

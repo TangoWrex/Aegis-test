@@ -8,7 +8,7 @@
     Sensor JSON Format
     "sensor_information": [
         {
-            "sensor_name":"",
+            "sensor_id":"",
             "sensor_password": "",
             "ip": "0",
             "port": 0,
@@ -49,6 +49,8 @@ class ClientSensor(Connection):
 
     def __init__(self, host, port, sdr, bluetooth, wifi, gps, krakensdr):
         super().__init__(host, port)
+        self.sensor_id = None
+        self.sensor_password = None
         self.sdr = sdr
         self.bluetooth = bluetooth
         self.wifi = wifi
@@ -66,9 +68,9 @@ class ClientSensor(Connection):
         # Implement the client logic here, using self.host and self.port
         self.connect()
 
-        # send the sensor information to the server for authentication
-        # The server will set up the sensor and send back a message
-        # confirming the connection
+        # send sensor id and password
+
+        #
 
     def get_gps(self):
         """Get the GPS coordinates.
