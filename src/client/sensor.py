@@ -70,7 +70,28 @@ class ClientSensor(Connection):
 
         # send sensor id and password
 
-        #
+        # listen for server response,
+        # The server will inform us if we failed the id and password check
+        # or if we passed and can continue
+
+        # functions check the hardward devices to make sure they are configured properly
+
+        # build our sensor information dictionary (json object)
+        # and send it to the server. This should match what the server has in it's database
+        # listen for response. If this check fails then there is a mismatch and our server willl send back
+        # what the difference is and we can begin troubleshooting
+
+        # if we pass the sensor information check then we can begin waiting for a job from the server
+
+        """
+
+        
+        """
+
+    def functions_check(self):
+        """ Check if the sensor hardware is configured properly
+        """
+        pass
 
     def get_gps(self):
         """Get the GPS coordinates.

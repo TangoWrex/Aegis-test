@@ -3,6 +3,7 @@
     {
             "sensor_id":"",
             "sensor_password": "",
+            "sensor_status": "",
             "ip": "0",
             "port": 0,
             "gps_status" : 0,

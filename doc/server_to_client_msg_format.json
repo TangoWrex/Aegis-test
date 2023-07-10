@@ -20,5 +20,19 @@
     {
         "sensor_id":"",
         "job_id":""
-    }
+    },
+    "sensor_information": 
+    {
+        "sensor_id":"",
+        "sensor_password": "",
+        "sensor_status": "",
+        "ip": "0",
+        "port": 0,
+        "gps_status" : 0,
+        "latitude": 0,
+        "longitude": 0,
+        "sdr": "",
+        "bluetooth": 0,
+        "krakensdr": 0
+    }   
 }
