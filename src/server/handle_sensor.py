@@ -6,7 +6,7 @@ import json
 MAX_PACKET_LEN = 2048
 
 
-class Client(object):
+class Sensor(object):
     """client object is created when a connection starts
 
     port 1 and port 2 are both send via the instructions port from the C server

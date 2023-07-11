@@ -83,10 +83,27 @@ class ClientSensor(Connection):
 
         # if we pass the sensor information check then we can begin waiting for a job from the server
 
-        """
+        # pylint: disable=pointless-string-statement
+        """{
+            "1" : "sdr_for_space",
+            "2" : "wifi_survey",
+            "3" : "bluetooth_survey",
+            "4" : "gsm_survey",
+            "5" : "lte_survey",
+            "6" : "spoof_gps",
+            "7" : "heat_map",
+            "8" : "crack_wifi",
+            "9" : "kraken",
+            "10" : "passive_scan"
+        } """
 
-        
+    def parse_server_message(self, message):
+        """parse_server_message
+
+        Given the message from the server 
+        parse the json and execute task
         """
+        pass
 
     def functions_check(self):
         """ Check if the sensor hardware is configured properly

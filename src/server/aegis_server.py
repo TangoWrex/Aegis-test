@@ -5,8 +5,8 @@ from _thread import *
 import threading
 from time import sleep
 import json
-from src.server.node import client
-from src.server.jobs import add_sensor
+from handle_sensor import Sensor
+from jobs import add_sensor
 import os
 
 json_lock = threading.Lock()
@@ -24,7 +24,7 @@ def threaded(connection: socket.socket, ipaddr: str, port: str):
         # data received from client
 
         # check if the node is in the macbase
-        node = client(connection, ipaddr, port)
+        node = Sensor(connection, ipaddr, port)
 
         valid_user = node.valid_user()
 

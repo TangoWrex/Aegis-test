@@ -1,5 +1,13 @@
 {
-    "Jobs"{
-        "1" : "sdr_for_space",
-        "2" : 
-}
+    
+    "1" : "sdr_for_space",
+    "2" : "wifi_survey",
+    "3" : "bluetooth_survey",
+    "4" : "gsm_survey",
+    "5" : "lte_survey",
+    "6" : "spoof_gps",
+    "7" : "heat_map",
+    "8" : "crack_wifi",
+    "9" : "kraken",
+    "10" : "passive_scan"
+} 
