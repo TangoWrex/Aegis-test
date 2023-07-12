@@ -50,7 +50,8 @@ class Sensor(object):
                     begin = time.time()
                 else:
                     time.sleep(0.1)
-            except Exception as e:
+
+            except Exception as err:
                 pass
         return total_data
 

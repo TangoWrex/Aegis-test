@@ -22,7 +22,9 @@
 
 """
 import subprocess
+import json
 from connection import Connection
+from client_dicts import id_pass
 
 
 class ClientSensor(Connection):
@@ -56,6 +58,7 @@ class ClientSensor(Connection):
         self.wifi = wifi
         self.gps = gps
         self.krakensdr = krakensdr
+        self.buffer = b''
 
     def run(self):
         """Run the client sensor and perform data collection.
@@ -69,6 +72,22 @@ class ClientSensor(Connection):
         self.connect()
 
         # send sensor id and password
+        # TODO: Get the sensors id and password from the config file.
+        # TODO: Or should we allow for the user to enter the id and password?
+        id_pass["id"] = "sensor1"
+        id_pass["password"] = "password"
+
+        # Convert the dictionary to a JSON string
+        json_string = json.dumps(id_pass)
+
+        # Get the length of the JSON string
+        length = len(json_string).encode()
+
+        self.buffer = json_string
+
+        print("Length of the buffer:", length)
+
+        self.send_all(length)
 
         # listen for server response,
         # The server will inform us if we failed the id and password check

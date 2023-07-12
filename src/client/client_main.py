@@ -1,6 +1,8 @@
 # import sys
 # import ipaddress
 from sensor import ClientSensor
+import sys
+import ipaddress
 
 
 def main():
@@ -16,8 +18,12 @@ def main():
     # port = sys.argv[2]
     # typecase port to int before passing it to sensor.
     # port = int(port)
-    host = '127.0.0.1'
-    port = 5001
+
+    ipaddr = sys.argv[1]
+    ipaddress.ip_address(ipaddr)
+    port = sys.argv[2]
+    # host = '127.0.0.1'
+    # port = 5003
 
     # currently only supports hackrf
     sdr = "hackrf"
@@ -28,7 +34,8 @@ def main():
     krakensdr = 0
 
     try:
-        client = ClientSensor(host, port, sdr, bluetooth, wifi, gps, krakensdr)
+        client = ClientSensor(ipaddr, int(port), sdr,
+                              bluetooth, wifi, gps, krakensdr)
         client.run()
     except ValueError as val_err:
         print(f'error: {val_err}')

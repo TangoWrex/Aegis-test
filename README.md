@@ -70,6 +70,9 @@ Run the python Server
 > *note: if no port is given a default port is chosen 
 > example: sudo python3 server.py -p 5003
 
+
+Run the sensor client
+
 Run the C client
 > make clean && make
 > sudo ./tutelary <port> <ip> <mac-or-name>
