@@ -76,7 +76,7 @@ Run the sensor client
 Run the C client
 > make clean && make
 > sudo ./tutelary <port> <ip> <mac-or-name>
-> example: sudo ./tutelary  5003  127.0.0.1  00:x7:z0:0c:32:bb
+> example: sudo ./aegis  5003  127.0.0.1  00:x7:z0:0c:32:bb
 
 Run the python dashboard
 > sudo python3 dashboard.py
