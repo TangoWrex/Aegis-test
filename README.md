@@ -4,6 +4,8 @@
 V1.0
 * Aegis is a tool that allows for control over remote sensors. The commands built in are designed to work with DragonOS, an operating system built to allow multiple Software Defined Radios and softwares to be used. 
 
+2025 update : Starting the process of reviewing code and confirming functionality over HaLow. CAD complete for the base design using lilygo HaLow ESP32 boards. Cases printed using Bambu labs will update with photos at later date. Tested firmware running on the board to auto detect droneID. 
+
 
 Git Link:
 
