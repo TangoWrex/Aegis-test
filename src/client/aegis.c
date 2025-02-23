@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
 		// if we recieved an ACK from the server we can go request them to send a job
 		while (!shutdown_flag){
 			// send a checkin message to the server 
-			// we don't want to bombard the server. sleep for 5 seconds between checkings 
+			// we don't want to bombard the server. sleep for 5 seconds between checkin 
 			sleep(5);	
 			send(sock, checkin_message, strlen(checkin_message), 0);
 			printf("sending checkin message\n");

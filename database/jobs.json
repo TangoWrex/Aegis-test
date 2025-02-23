@@ -1,4 +1,8 @@
 {
     "sensor_jobs": [
+        {
+            "mac": "00:x7:z0:0c:32:zz",
+            "jobs": []
+        }
     ]
 }
